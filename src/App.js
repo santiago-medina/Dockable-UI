@@ -3,7 +3,7 @@ import './style.css';
 import RHG from './resizable-holy-grail';
 export default function App() {
   return (
-    <div>
+    <div class="app-root">
       <RHG></RHG>
     </div>
   );
