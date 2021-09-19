@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 
 export default () => {
-  const { asideWidth, setAsideWidth } = useState('100em');
-
+  const [asideWidth, setAsideWidth] = useState(10);
+  const incAsideWidth = () => setAsideWidth(asideWidth + 1);
   return (
-    <div class="rhg-root">
+    <div className="rhg-root">
       <header>Header</header>
       {/*<nav>Nav</nav>*/}
-      <aside style={{ width: asideWidth }}>
+      <aside style={{ width: asideWidth + 'em' }}>
         Aside1
-        <div class="horizontal-resizer"></div>
+        <div className="horizontal-resizer" onClick={incAsideWidth}></div>
       </aside>
       <main>
         <article>
