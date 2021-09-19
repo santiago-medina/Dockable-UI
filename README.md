@@ -4,3 +4,4 @@
 
 Advatages:
 -Semantig tags for header, footer, left/right panes and main work area
+-UI frameork agnostic
