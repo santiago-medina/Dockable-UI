@@ -1,3 +1,5 @@
 import React from 'react';
 
-export default () => <a>Hola</a>;
+export default () => {
+  return <a>Main Area</a>;
+};
