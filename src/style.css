@@ -17,6 +17,11 @@ footer {
   grid-column: 1 / -1;
 }
 
+.split-view {
+  height: 100%;
+  width: 100%;
+}
+
 aside {
   grid-column: 1 / 2;
   grid-row: 2 / 4;
@@ -25,12 +30,12 @@ aside {
   position: relative;
 }
 
-aside .horizontal-resizer {
+.horizontal-resizer {
   height: 100%;
   width: 8px;
   right: 0;
   top: 0%;
-  position: absolute;
+  position: relative;
   background: rgba(102, 51, 153, 0.342);
   cursor: col-resize;
 }
@@ -77,3 +82,30 @@ article {
   flex: 1;
 }
 */
+
+html,
+body,
+#root,
+.app-root {
+  height: 100%;
+}
+
+.strip-v {
+  height: 100%;
+  background: red;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.strip-v > * {
+  /*height: 100%;*/
+  flex: 1;
+}
+
+.resize-control-v {
+  width: 100%;
+  max-height: 8px;
+  background: lightblue;
+  cursor: row-resize;
+}
