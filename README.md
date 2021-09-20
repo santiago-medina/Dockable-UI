@@ -1,4 +1,4 @@
-# Resizable UI widgets
+# Dockable UI widgets
 
 (Work In Progress)
 
