@@ -1,15 +1,52 @@
 import React, { useState } from 'react';
 
 export default () => {
+  let drag = false;
+
   const [asideWidth, setAsideWidth] = useState(10);
   const incAsideWidth = () => setAsideWidth(asideWidth + 1);
+  const resize = (e, o) => {
+    if (drag) {
+      console.log(e.screenX, e.screenY);
+    }
+  };
+  const setDrag = (e) => {
+    drag = true;
+    console.log(drag);
+
+    function redirectEvent(eventType, fromElement, toElement) {
+      //debugger;
+      fromElement.addEventListener(eventType, function (event) {
+        toElement.dispatchEvent(new event.constructor(event.type, event));
+        event.preventDefault();
+        event.stopPropagation();
+      });
+    }
+
+    let nextSibling = e.target.parentElement.nextSibling;
+    let prevSibling = e.target.parentElement;
+    let bar = e.target;
+    redirectEvent('mousemove', nextSibling, bar);
+    redirectEvent('mousemove', prevSibling, bar);
+  };
+
+  const clearDrag = () => {
+    drag = false;
+    console.log(drag);
+  };
+
   return (
     <div className="rhg-root">
       <header>Header</header>
       {/*<nav>Nav</nav>*/}
       <aside style={{ width: asideWidth + 'em' }}>
         Aside1
-        <div className="horizontal-resizer" onClick={incAsideWidth}></div>
+        <div
+          className="horizontal-resizer"
+          onMouseDown={setDrag}
+          onMouseUp={clearDrag}
+          onMouseMove={resize}
+        ></div>
       </aside>
       <main>
         <article>
