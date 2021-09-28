@@ -1,22 +1,33 @@
 import React, { useState } from 'react';
 
 export default (components) => {
-  let drag = false;
+  let drag = -1;
+
+  let nextSibling,prevSibling;
+  let originalOffsetHeight;
 
   const [sizes, setSizes] = useState([]);
 
   const resize = (e, o) => {
-    if (drag) {
-      console.log(e.screenX, e.screenY);
+    if (drag > 0) {
+      const delta = e.screenY - drag;
+      //  console.log(e.screenX, e.screenY);
+      //console.log(delta);
+      console.log(nextSibling.style.height);
+      nextSibling.style.maxHeight=(originalOffsetHeight-delta)+'px';  
     }
   };
 
   const clearDrag = (e) => {
-    drag = false;
+    drag = -1;
+    originalOffsetHeight=undefined;
   };
 
   const setDrag = (e) => {
-    drag = true;
+    nextSibling = e.target.nextSibling;
+    prevSibling = e.target.previousSibling;
+    drag = e.screenY;
+    originalOffsetHeight=nextSibling.offsetHeight
     console.log(drag);
 
     function redirectEvent(eventType, fromElement, toElement) {
@@ -28,8 +39,6 @@ export default (components) => {
       });
     }
 
-    let nextSibling = e.target.nextSibling;
-    let prevSibling = e.target.previousSibling;
     let bar = e.target;
     redirectEvent('mousemove', nextSibling, bar);
     redirectEvent('mousemove', prevSibling, bar);
