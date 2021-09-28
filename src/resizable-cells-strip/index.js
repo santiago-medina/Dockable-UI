@@ -3,32 +3,31 @@ import React, { useState } from 'react';
 export default (components) => {
   let drag = -1;
 
-  let nextSibling,prevSibling;
-  let originalOffsetHeight;
+  let nextSibling, prevSibling;
+  let originalOffsetHeight1, originalOffsetHeight2;
 
   const [sizes, setSizes] = useState([]);
 
   const resize = (e, o) => {
     if (drag > 0) {
       const delta = e.screenY - drag;
-      //  console.log(e.screenX, e.screenY);
-      //console.log(delta);
-      console.log(nextSibling.style.height);
-      nextSibling.style.maxHeight=(originalOffsetHeight-delta)+'px';  
+      prevSibling.style.maxHeight = originalOffsetHeight2 + delta + 'px';
+      nextSibling.style.maxHeight = originalOffsetHeight1 - delta + 'px';
     }
   };
 
   const clearDrag = (e) => {
     drag = -1;
-    originalOffsetHeight=undefined;
+    originalOffsetHeight1 = undefined;
+    originalOffsetHeight2 = undefined;
   };
 
   const setDrag = (e) => {
     nextSibling = e.target.nextSibling;
     prevSibling = e.target.previousSibling;
     drag = e.screenY;
-    originalOffsetHeight=nextSibling.offsetHeight
-    console.log(drag);
+    originalOffsetHeight1 = nextSibling.offsetHeight;
+    originalOffsetHeight2 = prevSibling.offsetHeight;
 
     function redirectEvent(eventType, fromElement, toElement) {
       //debugger;
