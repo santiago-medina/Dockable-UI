@@ -1,36 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default (components) => {
-  let drag = -1;
+  let dragStart = undefined;
+  let DOMSizes = [];
 
-  let nextSibling, prevSibling;
-  let originalOffsetHeight1, originalOffsetHeight2;
+  const [sizes, setSizes] = useState(DOMSizes);
 
-  const [sizes, setSizes] = useState([]);
+  const childrenWithProps = React.Children.map(
+    components.children,
+    (child, index) => {
+      // Checking isValidElement is the safe way and avoids a typescript
+      // error too.
+      if (React.isValidElement(child)) {
+        return React.cloneElement(child, {
+          style: { maxHeight: sizes[index] },
+        });
+      }
+      return child;
+    }
+  );
 
   const resize = (e, o) => {
-    if (drag > 0) {
-      const delta = e.screenY - drag;
-      prevSibling.style.maxHeight = originalOffsetHeight2 + delta + 'px';
-      nextSibling.style.maxHeight = originalOffsetHeight1 - delta + 'px';
+    if (dragStart > 0) {
+      const delta = e.screenY - dragStart;
+      e.target.previousSibling.style.maxHeight = DOMSizes[0] + delta + 'px';
+      e.target.nextSibling.style.maxHeight = DOMSizes[1] - delta + 'px';
     }
   };
 
   const clearDrag = (e) => {
-    drag = -1;
-    originalOffsetHeight1 = undefined;
-    originalOffsetHeight2 = undefined;
+    setSizes(...DOMSizes);
+    DOMSizes = [undefined, undefined];
+    dragStart = undefined;
   };
 
   const setDrag = (e) => {
-    nextSibling = e.target.nextSibling;
-    prevSibling = e.target.previousSibling;
-    drag = e.screenY;
-    originalOffsetHeight1 = nextSibling.offsetHeight;
-    originalOffsetHeight2 = prevSibling.offsetHeight;
+    dragStart = e.screenY;
+    DOMSizes = [
+      e.target.previousSibling.offsetHeight,
+      e.target.nextSibling.offsetHeight,
+    ];
 
     function redirectEvent(eventType, fromElement, toElement) {
-      //debugger;
       fromElement.addEventListener(eventType, function (event) {
         toElement.dispatchEvent(new event.constructor(event.type, event));
         event.preventDefault();
@@ -39,22 +50,22 @@ export default (components) => {
     }
 
     let bar = e.target;
-    redirectEvent('mousemove', nextSibling, bar);
-    redirectEvent('mousemove', prevSibling, bar);
-    redirectEvent('mouseup', nextSibling, bar);
-    redirectEvent('mouseup', prevSibling, bar);
+    redirectEvent('mousemove', e.target.nextSibling, bar);
+    redirectEvent('mousemove', e.target.previousSibling, bar);
+    redirectEvent('mouseup', e.target.nextSibling, bar);
+    redirectEvent('mouseup', e.target.previousSibling, bar);
   };
 
   return (
     <div className="strip-v">
-      {components.children[0]}
+      {childrenWithProps[0]}
       <div
         className="resize-control-v"
         onMouseDown={setDrag}
         onMouseMove={resize}
         onMouseUp={clearDrag}
       ></div>
-      {components.children[1]}
+      {childrenWithProps[1]}
     </div>
   );
 };
